@@ -1,0 +1,30 @@
+version: '3'
+services: 
+    web:
+        container_name: hide_out_web
+        build: .
+        volumes: 
+            - .:/hide_out/
+        ports: 
+            - "9000:8000"
+        command: ["./wait-for-db.sh", "db:40000", "python manage.py runserver 0.0.0.0:8000"]
+        depends_on: 
+            - db
+    db:
+        container_name: hide_out_db
+        image: mysql:8.0
+        ports: 
+            - '40000:3306'
+        volumes: 
+            - mysqldata:/var/lib/mysql
+            - ./db_cnf:/etc/mysql/conf.d
+        restart: always
+        environment: 
+            MYSQL_DATABASE: 'hide_out_db'
+            MYSQL_ROOT_PASSWORD: 'Tetsuya2525hideout'
+            MYSQL_PASSWORD: 'Tetsuya2525hideout'
+            MYSQL_USER: 'root'
+            MYSQL_ALLOW_EMPTY_PASSWORD: ‘yes’
+            TZ: 'Asia/Tokyo'
+volumes:
+    mysqldata:
